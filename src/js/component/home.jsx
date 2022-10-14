@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Home = () => {
 	const [tarea, setTarea] = useState([]);
 	const [tareaInput, setTareaInput] = useState("");
-	const [userInput, setuserInput] = useState("");
-	const [user, setUser] = useState(false);
-
+  const [userActive, setUserActive] = useState(false);
+  
+	
 	const addTask = (e) => {
 		e.preventDefault();
 		if (tareaInput !== ""){
@@ -14,89 +14,91 @@ const Home = () => {
 		}
 	}
 
-	// const deleteTask = (index) => {
-	// 	const newTask = [...tarea];
-	// 	newTask.splice(index, 1);
-	// 	setTarea(newTask);		
-	// }
+	const deleteTask = (index) => {
+		const newTask = [...tarea];
+		newTask.splice(index, 1);
+		setTarea(newTask);		
+	}
 
-	const addUser = (e) => {
-		e.preventDefault();
-		if (userInput !== ""){
-			fetch('https://assets.breatheco.de/apis/fake/todos/user/joeyb83', {
+  useEffect(() => {
+    user();
+    if(!userActive) {
+      newUser();
+      getTodo();
+    }    
+  });
+
+   	const newUser = () => {
+    fetch( "https://assets.breatheco.de/apis/fake/todos/user/joeyb83", {
 		method: "POST",
-		body: JSON.stringify({tarea}),
+		body: JSON.stringify([]),
 		headers: {
 		  "Content-Type": "application/json"
 		}
 	  })
 	  .then(resp => {
-		  console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
-		  console.log(resp.status); // el código de estado = 200 o código = 400 etc.
+		  console.log("Response newUser ok", resp.ok); // Será true (verdad) si la respuesta es exitosa.
+		  console.log("Response newUser status", resp.status); // el código de estado = 200 o código = 400 etc.
 		//   console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
 		  return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
 	  })
 	  .then(data => {
 		  //Aquí es donde debe comenzar tu código después de que finalice la búsqueda
-		  console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+		  console.log("newUser data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+      if (data.result == "ok"){
+        setUserActive(true);
+      }        
 	  })
 	  .catch(error => {
 		  //manejo de errores
-		  console.log(error);
-	  });			
-		}
-		setuserInput("");
-	}
-
+		  console.log("Error newUser", error);
+	  });       
+  }  
 	
-	// fetch('https://assets.breatheco.de/apis/fake/todos/user/joeyb83', {
-	// 	method: "POST",
-	// 	body: JSON.stringify({tarea}),
-	// 	headers: {
-	// 	  "Content-Type": "application/json"
-	// 	}
-	//   })
-	//   .then(resp => {
-	// 	  console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
-	// 	  console.log(resp.status); // el código de estado = 200 o código = 400 etc.
-	// 	//   console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
-	// 	  return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
-	//   })
-	//   .then(data => {
-	// 	  //Aquí es donde debe comenzar tu código después de que finalice la búsqueda
-	// 	  console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
-	//   })
-	//   .catch(error => {
-	// 	  //manejo de errores
-	// 	  console.log(error);
-	//   });
-
-	
-	fetch('https://assets.breatheco.de/apis/fake/todos/user/joeyb83', {
-    method: "GET",
-    //   body: JSON.stringify([]),
-      headers: {
-        "Content-Type": "application/json"
-      }
+	const user = () => {
+    fetch('https://assets.breatheco.de/apis/fake/todos/user', {
+    method: "GET",    
     })
     .then(resp => {
-		console.log(resp.ok);
-		setUser(true);		       
-        console.log(resp.status); // el código de estado = 200 o código = 400 etc.		
+		console.log("Response User ok", resp.ok);
+		console.log("Response User status", resp.status); // el código de estado = 200 o código = 400 etc.		
         // console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)        
-        return resp.json() // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results		
+    return resp.json() // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results		
     })	
     .then(data => {		      
-        console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor		
+        console.log("user data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+        setUserActive(data.includes("joeyb83"));               		
     })
     .catch(error => {
         //manejo de errores
-        console.log(error);
-    });		
-    	
-	
+        console.log("Error user", error);
+    });
+  }
 
-	fetch('https://assets.breatheco.de/apis/fake/todos/user/joeyb83', {
+  const getTodo = () => {
+      fetch('https://assets.breatheco.de/apis/fake/todos/user/joeyb83', {
+      method: "GET",      
+    })
+    .then(resp => {
+		console.log("Response getTodo ok", resp.ok); // Será true (verdad) si la respuesta es exitosa.
+        console.log("Response getTodo status", resp.status); // el código de estado = 200 o código = 400 etc.
+        // console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
+        return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
+    })
+    .then(data => {
+        //Aquí es dondes debe comenzar tu código después de que finalice la búsqueda
+        console.log("getTodo data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+        console.log("Ese arreglo ", Array.isarray(data)); //esto imprimirá en la consola el objeto exacto recibido del servidor
+        setTarea(data);
+    })
+    .catch(error => {
+        //manejo de errores
+        console.log("Error getTodo", error);
+    });
+  }  
+  
+  	const newTodo = () => {
+      fetch('https://assets.breatheco.de/apis/fake/todos/user/joeyb83', {
       method: "PUT",
       body: JSON.stringify({tarea}),
       headers: {
@@ -104,19 +106,20 @@ const Home = () => {
       }
     })
     .then(resp => {
-		console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
-        console.log(resp.status); // el código de estado = 200 o código = 400 etc.
+		console.log("Response newTodo ok", resp.ok); // Será true (verdad) si la respuesta es exitosa.
+        console.log("Response newTodo status", resp.status); // el código de estado = 200 o código = 400 etc.
         // console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
         return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
     })
     .then(data => {
         //Aquí es donde debe comenzar tu código después de que finalice la búsqueda
-        console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+        console.log("newTodo data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
     })
     .catch(error => {
         //manejo de errores
-        console.log(error);
+        console.log("Error newTodo", error);
     });
+  }
 
 	const deleteAll = () => {fetch('https://assets.breatheco.de/apis/fake/todos/user/joeyb83', {
       method: "DELETE",
@@ -126,32 +129,26 @@ const Home = () => {
       }
     })
     .then(resp => {
-        console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
-        console.log(resp.status); // el código de estado = 200 o código = 400 etc.
+        console.log("Response deleteAll ok", resp.ok); // Será true (verdad) si la respuesta es exitosa.
+        console.log("Response deleteAll status", resp.status); // el código de estado = 200 o código = 400 etc.
         // console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
         return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
     })
     .then(data => {
         //Aquí es donde debe comenzar tu código después de que finalice la búsqueda
-        console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+        console.log("deleteAll data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+        if (data.result == "ok"){
+          setUserActive(false);
+        }      
     })
     .catch(error => {
         //manejo de errores
-        console.log(error);
+        console.log("Error deleteAll", error);
     });
     }
 		
 	return(
-
-		{ user == true ?  <div className = "pared">
-		<h1>todos</h1>
-		<form className = "tareas">
-		<div className = "input">
-			<input type="text" autoComplete="off" value={tareaInput} placeholder = "Add user" onChange={e => setTareaInput(e.target.value)}/>
-		</div>	
-		<button type="submit" className="deleteall" onClick={addUser}>Submit</button>
-		</form>
-	</div> : <div className = "pared">
+		<div className = "pared">
 		<h1>todos</h1>
 		<form className = "tareas" onClick={addTask}>
 		<div className = "input">
@@ -167,7 +164,7 @@ const Home = () => {
 			<p>Pendientes: {tarea.length}</p>
 			<button className="deleteall" onClick={deleteAll}>Borrar Todo</button>
 		</form>
-	</div>);}	
+	</div>);	
 }
 
 
