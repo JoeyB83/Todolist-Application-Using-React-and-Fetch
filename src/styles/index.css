@@ -1,12 +1,97 @@
+body{
+    background-color: black;
+    margin: 0;
+    padding: 0;    
+}
 
-/* 
+.pared{
+    background-color: lightgray;
+    display: inline-block;
+    height: 700px;
+    width: 700px;
+    position: absolute;
+    top: calc(50% - 350px);
+    left: calc(50% - 350px);                   
+}
 
-    You can write your own styles here...
+h1 {
+    text-align:center;
+    font-size: 100px;
+    font-family: 'Raleway', sans-serif;
+    color: rgb(211, 201, 201)    
     
-    
-    ...Or you can use the import command to include 
-    other sylesheets into your bunde as well, e.j:
-    
-    import 'relative/path/to/stylesheet.scss';
+}
 
-*/
+.tareas{
+    background-color: white;
+    position:relative;
+    width: 500px;
+    height: auto;
+    left: calc(50% - 250px);
+    top: calc(25% - 150px);
+    text-align:center;
+    font-size: 30px;
+    overflow-x: hidden;
+    border-radius: 5px;
+    box-shadow: 0px 10px 10px 2px rgba(0,0,0,0.64);
+    -webkit-box-shadow: 0px 10px 10px 2px rgba(0,0,0,0.64);
+    -moz-box-shadow: 0px 10px 10px 2px rgba(0,0,0,0.64);    
+}
+
+.addButton{
+    display: none;    
+}
+
+input[type=text] {
+    border: none;    
+    width: 400px;
+           
+  }
+
+/* .newItem{
+    width: 400px;   
+    text-align: left;
+    margin-left: 50px;
+    display: flex; 
+              
+} */
+
+/* .newItem button{ 
+    float: right;
+    border: none;
+    background-color: transparent;
+    display: flex;                  
+} */
+
+.tareas p{
+    font-size: 15px;
+    text-align: left;
+    margin-left: 20px;
+    color: rgb(161, 161, 161);
+}
+
+::placeholder {
+    color:rgb(195, 194, 194);
+    opacity: 1; /* Firefox */
+  }
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: solid lightgray;
+    border-width: thin;
+ } 
+
+.input {
+    border-bottom: solid lightgray;
+    border-width: thin;
+    padding: 10px;
+} 
+
+.delete {
+    background-color: white;
+    border: none;
+    color: red;
+    padding-bottom: 5px;
+}
