@@ -2,17 +2,18 @@ import React, { useState, useEffect } from "react";
 
 const Home = () => {
 	const [tarea, setTarea] = useState([]);
-	const [tareaInput, setTareaInput] = useState("");
+	const [tareaInput, setTareaInput] = useState({label:"",done:false});
   const [userActive, setUserActive] = useState(false);
   
 	
 	const addTask = (e) => {
 		e.preventDefault();
-		if (tareaInput !== ""){
+		if (tareaInput.label !== ""){
 			setTarea([...tarea, tareaInput]);
-			setTareaInput("");
+      newTodo();      
+			setTareaInput({label:"",done:false});
 		}
-	}
+	}  
 
 	const deleteTask = (index) => {
 		const newTask = [...tarea];
@@ -23,12 +24,14 @@ const Home = () => {
   useEffect(() => {
     user();
     if(!userActive) {
-      newUser();
+      newUser();           
+    }
+    else{
       getTodo();
-    }    
-  });
+    }
+    }, [!userActive]);
 
-   	const newUser = () => {
+     	const newUser = () => {
     fetch( "https://assets.breatheco.de/apis/fake/todos/user/joeyb83", {
 		method: "POST",
 		body: JSON.stringify([]),
@@ -45,9 +48,9 @@ const Home = () => {
 	  .then(data => {
 		  //Aquí es donde debe comenzar tu código después de que finalice la búsqueda
 		  console.log("newUser data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
-      if (data.result == "ok"){
-        setUserActive(true);
-      }        
+      // if (data.result == "ok"){
+      //   setUserActive(true);
+      // }        
 	  })
 	  .catch(error => {
 		  //manejo de errores
@@ -67,7 +70,8 @@ const Home = () => {
     })	
     .then(data => {		      
         console.log("user data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
-        setUserActive(data.includes("joeyb83"));               		
+        setUserActive(data.includes("joeyb83"));
+        console.log("setUserActive status", data.includes("joeyb83") );               		
     })
     .catch(error => {
         //manejo de errores
@@ -88,19 +92,19 @@ const Home = () => {
     .then(data => {
         //Aquí es dondes debe comenzar tu código después de que finalice la búsqueda
         console.log("getTodo data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
-        console.log("Ese arreglo ", Array.isarray(data)); //esto imprimirá en la consola el objeto exacto recibido del servidor
+        console.log("Ese arreglo ", Array.isArray(data)); //esto imprimirá en la consola el objeto exacto recibido del servidor
         setTarea(data);
-    })
+    }, [])
     .catch(error => {
         //manejo de errores
         console.log("Error getTodo", error);
     });
   }  
   
-  	const newTodo = () => {
+  	const newTodo = () => {      
       fetch('https://assets.breatheco.de/apis/fake/todos/user/joeyb83', {
       method: "PUT",
-      body: JSON.stringify({tarea}),
+      body: JSON.stringify(tarea),
       headers: {
         "Content-Type": "application/json"
       }
@@ -111,9 +115,10 @@ const Home = () => {
         // console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
         return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
     })
-    .then(data => {
+    .then(data => {        
         //Aquí es donde debe comenzar tu código después de que finalice la búsqueda
         console.log("newTodo data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+        // setTareaInput([...tarea, tareaInput]);               
     })
     .catch(error => {
         //manejo de errores
@@ -152,14 +157,14 @@ const Home = () => {
 		<h1>todos</h1>
 		<form className = "tareas" onClick={addTask}>
 		<div className = "input">
-			<input type="text" autoComplete="off" value={tareaInput} placeholder = "Que tengo que hacer?" onChange={e => setTareaInput(e.target.value)}/>
+			<input type="text" autoComplete="off" value={tareaInput.label} placeholder = "Que tengo que hacer?" onChange={e => setTareaInput({label: e.target.value, done: false})}/>
 		</div>	
 		<button type="submit" className="addButton"></button>		
-		{tarea.map((item,index) => (			
-			<div className="task" key={index}>
-				<div className="newItem" key={index}>{item}</div>
-				<button className="delete" onClick={deleteTask}>x</button>
-           </div>
+		{tarea.map((tarea,index) => (
+      <div className="task" key={index}>
+        <div className="newItem" key={index}>{tarea.label}</div>
+        <button className="delete" onClick={deleteTask}>x</button>
+      </div>
 		))}
 			<p>Pendientes: {tarea.length}</p>
 			<button className="deleteall" onClick={deleteAll}>Borrar Todo</button>
