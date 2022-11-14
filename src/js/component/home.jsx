@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const Home = () => {
 	const [tarea, setTarea] = useState([]);
+  console.log("newtarea:", tarea)
 	const [tareaInput, setTareaInput] = useState({label:"",done:false});
   const [userActive, setUserActive] = useState(false);
   
@@ -9,8 +10,8 @@ const Home = () => {
 	const addTask = (e) => {
 		e.preventDefault();
 		if (tareaInput.label !== ""){
-			setTarea([...tarea, tareaInput]);
       newTodo();      
+			setTarea([...tarea, tareaInput]);
 			setTareaInput({label:"",done:false});
 		}
 	}  
@@ -19,6 +20,7 @@ const Home = () => {
 		const newTask = [...tarea];
 		newTask.splice(index, 1);
 		setTarea(newTask);		
+    console.log("delete:", tarea)
 	}
 
   useEffect(() => {
@@ -92,8 +94,8 @@ const Home = () => {
     .then(data => {
         //Aquí es dondes debe comenzar tu código después de que finalice la búsqueda
         console.log("getTodo data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
-        console.log("Ese arreglo ", Array.isArray(data)); //esto imprimirá en la consola el objeto exacto recibido del servidor
-        setTarea(data);
+        // console.log("Ese arreglo ", Array.isArray(data)); //esto imprimirá en la consola el objeto exacto recibido del servidor
+        setTarea(data);        
     }, [])
     .catch(error => {
         //manejo de errores
@@ -117,8 +119,9 @@ const Home = () => {
     })
     .then(data => {        
         //Aquí es donde debe comenzar tu código después de que finalice la búsqueda
-        console.log("newTodo data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
-        // setTareaInput([...tarea, tareaInput]);               
+        console.log("newTodo data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor        
+        console.log("Tareas:", tarea);
+        // setTarea(data);               
     })
     .catch(error => {
         //manejo de errores
@@ -143,6 +146,7 @@ const Home = () => {
         //Aquí es donde debe comenzar tu código después de que finalice la búsqueda
         console.log("deleteAll data", data); //esto imprimirá en la consola el objeto exacto recibido del servidor
         if (data.result == "ok"){
+          setTarea([]);
           setUserActive(false);
         }      
     })
