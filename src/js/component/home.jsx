@@ -167,7 +167,7 @@ const Home = () => {
 		{tarea.map((tarea,index) => (
       <div className="task" key={index}>
         <div className="newItem" key={index}>{tarea.label}</div>
-        <button className="delete" onClick={deleteTask}>x</button>
+        <button className="delete" onClick={() => deleteTask(index)}>x</button>
       </div>
 		))}
 			<p>Pendientes: {tarea.length}</p>
